@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromtGPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #121212;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #1f1f1f;
+        color: #fff;
+        text-align: center;
+        padding: 1.5rem 0;
+        box-shadow: 0 2px 5px rgba(255,255,255,0.05);
+    }
+    main {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .prompt-card {
+        background-color: #1f1f1f;
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .prompt-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .prompt-title {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        color: #fff;
+    }
+    .prompt-text {
+        color: #ddd;
+        white-space: pre-line; /* preserve line breaks */
+        user-select: text; /* টেক্সট সিলেক্টেবল */
+        cursor: text;
+        padding-right: 50px; /* copy button জন্য space */
+    }
+    .copy-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: black;
+        border: none;
+        color: #fff;
+        padding: 0.3rem 0.6rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+    }
+    .copy-btn:hover {
+        background-color: #357A;
+    }
+    @media(max-width: 600px){
+        .prompt-text {
+            padding-right: 40px;
+        }
+        .copy-btn {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>PromtGPT</h1>
+</header>
+
+<main>
+    <div id="promptContainer"></div>
+</main>
+
+<script>
+// এখানে তোমার TXT ফাইলের লিঙ্ক বসাও
+const txtFileLink = "./PromtGPT.txt"; // <-- লিংক পরিবর্তন করো
+
+fetch(txtFileLink)
+.then(response => {
+    if (!response.ok) throw new Error("ফাইল লোড করা যায়নি!");
+    return response.text();
+})
+.then(data => {
+    const container = document.getElementById('promptContainer');
+    const prompts = data.split('\n').filter(line => line.trim() !== '');
+    prompts.forEach((prompt, index) => {
+        const card = document.createElement('div');
+        card.className = 'prompt-card';
+
+        card.innerHTML = `
+            <div class="prompt-title">Prompt ${index+1}</div>
+            <div class="prompt-text" id="prompt-text-${index}">${prompt}</div>
+            <button class="copy-btn" onclick="copyPrompt(${index})">কপি</button>
+        `;
+
+        container.appendChild(card);
+    });
+})
+.catch(err => {
+    alert("ত্রুটি: " + err.message);
+});
+
+// কপি ফাংশন
+function copyPrompt(index){
+    const text = document.getElementById(`prompt-text-${index}`).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("প্রম্পট কপি করা হয়েছে!");
+    }).catch(() => {
+        alert("কপি করতে ব্যর্থ!");
+    });
+}
+</script>
+<center><p>Humayun Shariar Himu</p></center>
+</body>
+</html>
